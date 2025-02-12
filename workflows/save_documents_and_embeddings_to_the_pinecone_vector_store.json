@@ -1,0 +1,205 @@
+{
+  "name": "Save documents and embeddings to the Pinecone vector store",
+  "nodes": [
+    {
+      "parameters": {
+        "content": "Step 1: Set up data source and content extraction\n",
+        "height": 580,
+        "width": 860
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "eae92cae-7987-4545-b268-f5e82f59173a",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.documentDefaultDataLoader",
+      "typeVersion": 1,
+      "position": [
+        560,
+        260
+      ],
+      "id": "a91de473-9584-4025-8b11-2e54d0886369",
+      "name": "Default Data Loader"
+    },
+    {
+      "parameters": {
+        "chunkSize": 100,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.textSplitterRecursiveCharacterTextSplitter",
+      "typeVersion": 1,
+      "position": [
+        600,
+        420
+      ],
+      "id": "cb70c3ac-d8c6-4e73-81a7-4a73a0e0ec9b",
+      "name": "Recursive Character Text Splitter"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        60,
+        60
+      ],
+      "id": "e393f34b-1218-4178-8f4c-90892e7f08b2",
+      "name": "When clicking ‘Test workflow’"
+    },
+    {
+      "parameters": {
+        "mode": "insert",
+        "pineconeIndex": {
+          "__rl": true,
+          "value": "n8n",
+          "mode": "list",
+          "cachedResultName": "n8n"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.vectorStorePinecone",
+      "typeVersion": 1,
+      "position": [
+        420,
+        60
+      ],
+      "id": "05397abb-91bb-4353-9ec4-02732c0ad7ff",
+      "name": "Pinecone Vector Store2",
+      "retryOnFail": false,
+      "alwaysOutputData": false,
+      "executeOnce": true,
+      "notesInFlow": false,
+      "credentials": {
+        "pineconeApi": {
+          "id": "naPOyH98LKy5bAP5",
+          "name": "PineconeApi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": "text-embedding-3-small",
+        "options": {}
+      },
+      "id": "ddbca880-4832-4ca6-8cbf-7a2782c9bfcd",
+      "name": "Embeddings OpenAI1",
+      "type": "@n8n/n8n-nodes-langchain.embeddingsOpenAi",
+      "typeVersion": 1,
+      "position": [
+        380,
+        240
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "DeY5flSZFUOycD5F",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.readWriteFile",
+      "typeVersion": 1,
+      "position": [
+        1180,
+        -80
+      ],
+      "id": "54081580-7022-4506-928b-cb2286790339",
+      "name": "Read/Write Files from Disk"
+    },
+    {
+      "parameters": {
+        "fileSelector": "/files/data.json",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.readWriteFile",
+      "typeVersion": 1,
+      "position": [
+        240,
+        60
+      ],
+      "id": "380db27a-5bbd-4315-8dc6-1a00add11fee",
+      "name": "Read/Write Files from Disk1",
+      "alwaysOutputData": true
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Default Data Loader": {
+      "ai_document": [
+        [
+          {
+            "node": "Pinecone Vector Store2",
+            "type": "ai_document",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Recursive Character Text Splitter": {
+      "ai_textSplitter": [
+        [
+          {
+            "node": "Default Data Loader",
+            "type": "ai_textSplitter",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When clicking ‘Test workflow’": {
+      "main": [
+        [
+          {
+            "node": "Read/Write Files from Disk1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Embeddings OpenAI1": {
+      "ai_embedding": [
+        [
+          {
+            "node": "Pinecone Vector Store2",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read/Write Files from Disk1": {
+      "main": [
+        [
+          {
+            "node": "Pinecone Vector Store2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "5913d0d5-9fd2-40ce-adac-3dc950c554ae",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "a1f51c5f2107691d7f7ca0b56d0b9ea9e854e6c35fd37c336ec89955dbf012fc"
+  },
+  "id": "W2STTvP8iKFdVTGT",
+  "tags": []
+}
