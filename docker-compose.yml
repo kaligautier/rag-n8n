@@ -1,3 +1,4 @@
+version: "3.7"
 
 services:
   traefik:
@@ -13,7 +14,7 @@ services:
       - "--entrypoints.web.http.redirections.entrypoint.scheme=https"
       - "--entrypoints.websecure.address=:443"
       - "--certificatesresolvers.mytlschallenge.acme.tlschallenge=true"
-      - "--certificatesresolvers.mytlschallenge.acme.email=gautieresam@gmail.com"
+      - "--certificatesresolvers.mytlschallenge.acme.email=gautieresam@gmail.com"  # Change ceci avec ton email
       - "--certificatesresolvers.mytlschallenge.acme.storage=/letsencrypt/acme.json"
     ports:
       - "80:80"
@@ -23,9 +24,7 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock:ro
 
   n8n:
-    build:
-      context: .
-      dockerfile: Dockerfile
+    image: docker.n8n.io/n8nio/n8n:latest
     restart: always
     ports:
       - "127.0.0.1:5678:5678"
